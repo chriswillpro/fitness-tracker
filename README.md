@@ -70,9 +70,10 @@ API docs (Swagger UI) are then available at `http://127.0.0.1:8000/docs`.
 
 **3. Frontend**
 
+Run from the repo root (not `frontend/`) so Streamlit picks up the theme in `.streamlit/config.toml`:
+
 ```bash
-cd frontend
-streamlit run app.py
+streamlit run frontend/app.py
 ```
 
 Streamlit reads `API_BASE_URL` from the environment (defaults to `http://127.0.0.1:8000`).
