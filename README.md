@@ -77,10 +77,28 @@ streamlit run app.py
 
 Streamlit reads `API_BASE_URL` from the environment (defaults to `http://127.0.0.1:8000`).
 
+## Deployment
+
+**Backend (Render)**
+
+1. In the [Render dashboard](https://dashboard.render.com), choose **New → Blueprint** and connect this repo. Render reads `render.yaml` and provisions a free web service (`fitness-tracker-api`) automatically.
+2. When prompted for the `DATABASE_URL` env var, paste your Neon/Supabase connection string (the same value as in your local `.env`).
+3. Once live, note the service URL (e.g. `https://fitness-tracker-api.onrender.com`) — the frontend needs it.
+
+**Frontend (Streamlit Community Cloud)**
+
+1. In [share.streamlit.io](https://share.streamlit.io), create a new app from this repo with main file path `frontend/app.py`. Streamlit Cloud picks up `frontend/requirements.txt` automatically since it lives alongside the entry point.
+2. In the app's **Settings → Secrets**, add:
+   ```
+   API_BASE_URL = "https://fitness-tracker-api.onrender.com"
+   ```
+   (using your actual Render URL from above).
+
+Note: Render's free tier spins down after inactivity, so the first request after idling will be slow while it wakes up — expected on the free plan, not a bug.
+
 ## Status / roadmap
 
 MVP feature set (logging, body metrics, progress photos, trend analysis) is complete and running against a live database. Not yet done:
 
-- Deployment (Render/Railway for the API, Streamlit Community Cloud for the frontend) — no live demo link yet.
-- Cloud object storage for progress photos (currently local disk, fine for single-user local use).
+- Cloud object storage for progress photos — currently written to local disk, which is ephemeral on Render's free tier (uploads won't survive a redeploy/restart in production, though they work fine for local use). Swapping in Supabase Storage or Cloudinary is a storage-backend change only, since `photo_url` is just a text reference.
 - Stretch: PWA migration for an installable, phone-friendly frontend.
